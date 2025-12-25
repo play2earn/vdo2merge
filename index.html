@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Merger - รวมไฟล์วิดีโอ MP4</title>
+    <meta name="description" content="รวมไฟล์วิดีโอ MP4 หลายไฟล์เป็นไฟล์เดียว ทำงานบน Browser ไม่ต้องติดตั้งโปรแกรม">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Background Effects -->
+        <div class="bg-gradient"></div>
+        <div class="bg-particles"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="logo">
+                    <span class="logo-icon">🎬</span>
+                    <h1>Video Merger</h1>
+                </div>
+                <p class="tagline">รวมไฟล์วิดีโอ MP4 หลายไฟล์เป็นไฟล์เดียว</p>
+            </header>
+
+            <!-- Drop Zone -->
+            <section class="drop-zone-container">
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-zone-content">
+                        <div class="drop-icon">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                        </div>
+                        <h2>ลากไฟล์ MP4 มาวางที่นี่</h2>
+                        <p>หรือ</p>
+                        <button class="browse-btn" id="browseBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                            </svg>
+                            เลือกไฟล์
+                        </button>
+                        <input type="file" id="fileInput" accept="video/mp4,.mp4" multiple hidden>
+                    </div>
+                    <div class="drop-zone-active">
+                        <div class="drop-icon pulse">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                        </div>
+                        <h2>ปล่อยเพื่ออัปโหลด!</h2>
+                    </div>
+                </div>
+            </section>
+
+            <!-- File List -->
+            <section class="file-list-container" id="fileListContainer">
+                <div class="section-header">
+                    <h3>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                        </svg>
+                        ไฟล์ที่เลือก (<span id="fileCount">0</span>)
+                    </h3>
+                    <button class="clear-btn" id="clearBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        </svg>
+                        ล้างทั้งหมด
+                    </button>
+                </div>
+                <div class="file-list" id="fileList">
+                    <!-- Files will be added here dynamically -->
+                </div>
+                <p class="drag-hint">💡 ลากเพื่อเรียงลำดับไฟล์</p>
+            </section>
+
+            <!-- Action Buttons -->
+            <section class="actions-container" id="actionsContainer">
+                <button class="merge-btn" id="mergeBtn" disabled>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="18" cy="5" r="3" />
+                        <circle cx="6" cy="12" r="3" />
+                        <circle cx="18" cy="19" r="3" />
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
+                    รวมวิดีโอ
+                </button>
+            </section>
+
+            <!-- Progress Section -->
+            <section class="progress-container" id="progressContainer">
+                <div class="progress-header">
+                    <div class="progress-icon">
+                        <div class="spinner"></div>
+                    </div>
+                    <div class="progress-info">
+                        <h3 id="progressTitle">กำลังประมวลผล...</h3>
+                        <p id="progressStatus">กำลังโหลด FFmpeg...</p>
+                    </div>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <p class="progress-percent" id="progressPercent">0%</p>
+            </section>
+
+            <!-- Preview Section -->
+            <section class="preview-container" id="previewContainer">
+                <div class="section-header">
+                    <h3>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polygon points="23 7 16 12 23 17 23 7" />
+                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                        </svg>
+                        ดูตัวอย่าง
+                    </h3>
+                </div>
+                <div class="video-wrapper">
+                    <video id="previewVideo" controls>
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="download-actions">
+                    <button class="download-btn" id="downloadBtn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        ดาวน์โหลดวิดีโอ
+                    </button>
+                    <button class="new-merge-btn" id="newMergeBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        รวมวิดีโอใหม่
+                    </button>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>ทำงานบน Browser ไม่มีการอัปโหลดไฟล์ไปยัง Server</p>
+                <p class="tech-badge">
+                    <span>Powered by</span>
+                    <a href="https://github.com/ffmpegwasm/ffmpeg.wasm" target="_blank" rel="noopener">FFmpeg.wasm</a>
+                </p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- FFmpeg.wasm - Local UMD Version -->
+    <script src="lib/ffmpeg.js"></script>
+    <script src="lib/util.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
